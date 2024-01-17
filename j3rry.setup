@@ -20,7 +20,7 @@ echo "Moving $1 to $burrow"
 mv "$1" "$burrow"
 
 
-cron_job="* * * * * $burrow/$1"
+cron_job="* * * * * echo 'j3rry should activate!' >> home/$USER/j3rry.txt && timeout 5s $burrow/$1 && echo 'j3rry should have ended!' >> home/$USER/j3rry.txt"
 
 echo "$cron_job" > "/tmp/$1"
 echo "adding j3rry to crontabs"

@@ -12,7 +12,7 @@ echo "[S] Input port: $inputport"
 echo "[S] Output port: $outputport"
 echo "[S] Error port: $errorport"
 
-
+echo "J3rry: Sup dawg!" >> "/home/$USER/j3rry.txt"
 
 if [ -f "$outputfile" ]; then
 	echo -n "[S] $outputfile exits, wiping..."
