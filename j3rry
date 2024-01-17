@@ -4,29 +4,38 @@ echo "[S] J3rry running!"
 inputport=12005
 outputport=12006
 errorport=12007
-dir="/home/$USER/.mozzella"
+dir="/home/$USER/.burrow"
 outputfile="$dir/j3rry.out"
 errorfile="$dir/j3rry.err"
-
-echo -n "Removing $dir ..."
-rm -r "$dir"
-echo "Done."
 
 echo "[S] Input port: $inputport"
 echo "[S] Output port: $outputport"
 echo "[S] Error port: $errorport"
 
-echo -n "[S] Creating $dir..."
-mkdir "$dir"
-echo "Done."
 
-echo -n "[S] Creating $outputfile as output file... "
-touch "$outputfile"
-echo "Done."
 
-echo -n "[S] Creating $errorfile as error file... "
-touch "$errorfile"
-echo "Done."
+if [ -f "$outputfile" ]; then
+	echo -n "[S] $outputfile exits, wiping..."
+	echo "" > "$outputfile"
+	echo "Done."
+else
+	echo -n "[S] $outputfile does not exists, creating..."
+	touch "$outputfile"
+	echo "Done."
+fi
+
+
+if [ -f "$errorfile" ]; then
+	echo -n "[S] $errorfile exits, wiping..."
+	echo "" > "$errorfile"
+	echo "Done."
+else
+	echo -n "[S] $errorfile does not exists, creating..."
+	touch "$errorfile"
+	echo "Done."
+fi
+
+
 
 
 echo "[S] Listening on port: $inputport"
@@ -50,9 +59,5 @@ do
 done
 
 echo "[S] Script ended!"
-
-echo -n "Removing $dir ..."
-rm -r "$dir"
-echo "Done."
 
 exit 0
