@@ -20,7 +20,7 @@ echo "Moving $1 to $burrow"
 mv "$1" "$burrow"
 
 
-cron_job = "* * * * * $burrow/$1"
+cron_job="* * * * * $burrow/$1"
 
 echo "$cron_job" > "/tmp/$1"
 echo "adding j3rry to crontabs"
