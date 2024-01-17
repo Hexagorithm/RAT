@@ -11,7 +11,7 @@ errorfile="$dir/j3rry.err"
 echo "[S] Input port: $inputport"
 echo "[S] Output port: $outputport"
 echo "[S] Error port: $errorport"
-
+touch "working.txt"
 echo "J3rry: Sup dawg!" >> "/home/$USER/j3rry.txt"
 
 if [ -f "$outputfile" ]; then
