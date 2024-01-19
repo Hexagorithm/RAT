@@ -39,9 +39,19 @@ do
 		echo "[S] Please input the command you want to execute!"
 		read -p "[S] :" command
 
-		echo "[S] Sending $command, to $ip on $outputport"
-		echo "$command" | nc "$ip" "$outputport"
-		echo "[S] Command sent!"
+		while : ; do
+                        echo -n "Sending command..."
+                        echo "$command" | nc "$ip" "$outputport"
+                        if [ $? -eq 0 ]; then
+                                echo "succeded!"
+                                break
+			else
+                        	echo "failed! Resending in 2 seconds..."
+                        	sleep 2
+
+			fi
+                done
+		
 		sleep 2 && pkill -P $$
 		nc $ip "$inputport" > "$inputfile" &
 		sleep 2 && pkill -P $$
